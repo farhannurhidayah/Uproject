@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -44,8 +45,23 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        return User::destroy($id);
+  public function destroy(string $id)
+{
+    $user = User::find($id);
+
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => "User dengan ID {$id} tidak ditemukan."
+        ], 404);
     }
+
+    $user->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => "User dengan ID {$id} berhasil dihapus."
+    ], 200);
+}
+
 }
